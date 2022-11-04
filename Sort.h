@@ -28,7 +28,7 @@ void DivideMergeSort(int *arr, int *tempMergeArr, int left, int right);
  */
 void MergeSortArr(int *arr, int *tempArr, int left, int middle, int right);
 
-void QuickSort(int arr[], int len);
+void QuickSort(int arr[], int begin, int end);
 
 void ShellSort(int arr[], int len);
 

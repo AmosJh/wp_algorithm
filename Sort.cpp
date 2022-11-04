@@ -78,6 +78,29 @@ void MergeSortArr(int *arr, int *tempArr, int left, int middle, int right)
     }
 }
 
+void QuickSort(int arr[], int begin, int end)
+{
+    int i = begin, j = end;
+    int curValue = arr[i];
+    if( i < j)
+    {
+        while(i < j) {
+            while (i<j && curValue<=arr[j]) 
+                j--;
+            if(i < j)
+                arr[i++] = arr[j];
+            while(i<j && arr[i]<=curValue)
+                i++;
+            if(i < j)
+                arr[j--] = arr[i];  
+        }
+        arr[i] = curValue;  //找到最终位置
+        // printf("找到第%d个元素的正确位置，值为:%d\n", i, arr[i]);
+        QuickSort(arr, begin, i-1);
+        QuickSort(arr, i+1, end);
+    }
+}
+
 void PrintArr(int arr[], int len, int ardinal)
 {
     printf("第 %d 次排序:", ardinal);
