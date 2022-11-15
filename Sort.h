@@ -30,6 +30,13 @@ void MergeSortArr(int *arr, int *tempArr, int left, int middle, int right);
 
 void QuickSort(int arr[], int begin, int end);
 
+/**
+ * @brief 插入排序
+ *
+ * @param arr 待排序的数组
+ * @param len 数组的长度
+ */
+void InsertionSort(int *arr, int len);
 void ShellSort(int arr[], int len);
 
 void RadixSort(int arr[], int len);

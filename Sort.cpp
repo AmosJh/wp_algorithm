@@ -110,3 +110,43 @@ void PrintArr(int arr[], int len, int ardinal)
     }
     printf("\n");
 }
+
+
+void InsertionSort(int *arr, int len)
+{
+    for (int i = 0; i < len; i++)
+    {
+        int cur_value = arr[i];
+        int cur_position = i;
+        while (cur_value < arr[cur_position - 1] && cur_position > 0)
+        {
+            arr[cur_position] = arr[cur_position - 1];
+            cur_position--;
+        }
+        arr[cur_position] = cur_value;
+
+        //打印验证
+        printf("第%d次排序：", i);
+        for (int j = 0; j <= i; j++)
+        {
+            printf("%d ", arr[j]);
+        }
+        printf("\n");
+    }
+}
+
+void ShellSort(int arr[], int len)
+{
+    for(int gap = len/2; gap >0; gap = gap/2) {
+        for (int i = gap; i < len; i++)
+        {
+            int cur_pos = i;
+            int cur_date = arr[i];
+            while(cur_pos-gap >= 0 && arr[cur_pos-gap] > cur_date){ //cur_pos-gap >= 0
+                arr[cur_pos] = arr[cur_pos-gap];
+                cur_pos = cur_pos - gap;
+            }
+            arr[cur_pos] = cur_date;
+        }
+    }
+}
