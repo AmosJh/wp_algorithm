@@ -150,3 +150,83 @@ void ShellSort(int arr[], int len)
         }
     }
 }
+
+
+int MaxBit(int data[], int n) //辅助函数，求数据的最大位数
+{
+    int maxData = data[0];              ///< 最大数
+    for (int i = 1; i < n; ++i)
+    {
+        if (maxData < data[i])
+            maxData = data[i];
+    }
+    int d = 1;
+    int p = 10;
+    while (maxData >= p)
+    {
+        //p *= 10; // Maybe overflow
+        maxData /= 10;
+        ++d;
+    }
+    return d;
+}
+void RadixSort(int arr[], int len) {
+    int bit = MaxBit(arr, len);//获取位数
+    int **tmp = (int**)malloc(sizeof(int*)*10);//用于位数次排序的临时数组tmp[x][0]存储基数为x的数组的元素个数
+    memset(tmp, 0, sizeof(int *)*10);
+    for(int i =0; i < 10; i++)
+    {
+        tmp[i] = (int*)malloc(sizeof(int)*(len+1));
+        memset(tmp[i], 0, sizeof(int)*(len+1));
+    }
+    int radix = 1;
+    for(int i = 0; i < bit; i++)//位数次排序
+    {
+        //清空
+        for(int i =0; i < 10; i++)
+        {
+            memset(tmp[i], 0, sizeof(int)*(len+1));
+        }
+        for(int j = 0; j < len; j++) {//对len个数据进行分桶
+            int num = arr[j]/radix%10;//arr[j]在该轮的基数，放入
+            ++tmp[num][0];
+            tmp[num][tmp[num][0]] = arr[j];
+            printf("num %d into num[%d][%d]\n", arr[j], num,tmp[num][0]);
+        }
+
+        //tmp内容放回数组，进行下一轮基排
+        int count = 0; 
+        for(int i =0; i < 10; i++)
+        {
+            for(int j = 1; j <= tmp[i][0]; j++)
+            {
+                arr[count] = tmp[i][j];
+                count++;
+                // printf("[%d] ", arr[i]);
+            }
+        }
+        //查看每一轮的排序结果
+        // for(int i =0; i < len; i++)
+        // {
+        //     printf("%d ", arr[i]);
+        // }
+        // printf("\n");
+        radix *= 10;
+    }
+
+    for(int i = 0; i < 10; i++)
+    {
+        if(tmp[i] != NULL)
+        {
+            delete(tmp[i]);
+            tmp[i] = NULL;
+
+        }
+    }
+    if(tmp != NULL)
+    {
+        delete(tmp);
+        tmp = NULL;
+    }
+    
+}

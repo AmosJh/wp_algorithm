@@ -39,6 +39,13 @@ void QuickSort(int arr[], int begin, int end);
 void InsertionSort(int *arr, int len);
 void ShellSort(int arr[], int len);
 
+/**
+ * @brief 基数排序辅助函数，求出最大位数
+ * 
+ * @param data 待排数组
+ * @param len 待排数组的长度
+ */
+int maxbit(int data[], int len);
 void RadixSort(int arr[], int len);
 
 void PrintArr(int arr[], int len, int ardinal);
