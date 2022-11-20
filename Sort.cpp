@@ -22,7 +22,7 @@ void SelectionSort(int arr[], int len)
             arr[minIndex] = arr[i];
             arr[i] = minValue;
 
-            PrintArr(arr, len, i);            
+            PrintArr(arr, len);            
         }
 }
 
@@ -101,12 +101,11 @@ void QuickSort(int arr[], int begin, int end)
     }
 }
 
-void PrintArr(int arr[], int len, int ardinal)
+void PrintArr(int arr[], int len)
 {
-    printf("第 %d 次排序:", ardinal);
     for (int i = 0; i < len; i++)
     {
-        printf("%d ", arr[i]);
+        printf("%d\n", arr[i]);
     }
     printf("\n");
 }

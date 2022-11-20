@@ -1,3 +1,11 @@
+/*
+ * @Author: AmosJh amos31598582@163.com
+ * @Date: 2022-11-20 10:11:19
+ * @LastEditors: AmosJh amos31598582@163.com
+ * @LastEditTime: 2022-11-20 19:46:19
+ * @FilePath: /algorithm/Sort.h
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 #ifndef __SORT_H__
 #define __SORT_H__
 
@@ -48,6 +56,6 @@ void ShellSort(int arr[], int len);
 int maxbit(int data[], int len);
 void RadixSort(int arr[], int len);
 
-void PrintArr(int arr[], int len, int ardinal);
+void PrintArr(int arr[], int len);
 
 #endif
