@@ -5,7 +5,7 @@
 #include<sys/time.h>
 #include "Sort.h"
 
-const int DATA_ARR_LEN = 1e6;   //待排序数据的总量,数据量过大会导致栈溢出(1e7的时候)
+const int DATA_ARR_LEN = 100000;   //待排序数据的总量,数据量过大会导致栈溢出(1e7的时候)
 const int MAX_DATA_VALUE = 1e7;  //待排数据中的数据最大值
 const int PTHREAD_NUM = 4;    //线程的数量(数组的数量)
 const int PTHREAD_ARR_LEN = DATA_ARR_LEN/PTHREAD_NUM;   //每个线程内元素的数量
@@ -60,10 +60,10 @@ void Merge(int arr[], int arrLen)
         index[i] = i * PTHREAD_ARR_LEN;
     }
 
-    for (int i = 0; i < PTHREAD_NUM; i++)
-    {
-        printf("%d\n", index[i]);
-    }
+    // for (int i = 0; i < PTHREAD_NUM; i++)
+    // {
+    //     printf("%d\n", index[i]);
+    // }
     
     
     for (int i = 0; i < DATA_ARR_LEN; i++)//DATA_ARR_LEN个数据进行归并
@@ -100,45 +100,79 @@ void Merge(int arr[], int arrLen)
     
 }
 
-int main(){
-
-    // int arr[] = {9,8,6,7,5,2,1,3,4};
-    // int arr[] = {7,6,5,4,3,2,1};
-    // int arr[] = {9,18,26,37,105,21,17,336,4021};
-    // int arr[100] = {0};
-
-    // SelectionSort(arr, sizeof(arr)/sizeof(arr[0]));
-    // MergeSort(arr, sizeof(arr)/sizeof(arr[0]));
-    // QuickSort(arr, 0, sizeof(arr)/sizeof(arr[0])-1);
-    // ShellSort(arr, sizeof(arr)/sizeof(arr[0]));
-    // RadixSort(arr, sizeof(arr)/sizeof(arr[0]));
-    // PrintArr(dataArr, DATA_ARR_LEN);
-    
+void CalcSortTime(int dataArr[], int dataLen, void(*SortFunc)(int arr[], int len), char *sortFuncName){
     InitData(dataArr, DATA_ARR_LEN);
+    struct timeval tv_begin,tv_end;
+    long long s_usec;
+    long long e_usec;
+
+    printf("start %s, dataNum:%d\n", sortFuncName, dataLen);
+
+    gettimeofday(&tv_begin,NULL);
+    SortFunc(dataArr, dataLen);
+    gettimeofday(&tv_end,NULL);
+
+    s_usec = tv_begin.tv_sec * 1000000 + tv_begin.tv_usec;
+    e_usec = tv_end.tv_sec * 1000000 + tv_end.tv_usec;
+    printf("毫秒差: %ld\n", e_usec-s_usec);
+    printf("秒差:%ld\n", (e_usec-s_usec)/1000000);  
+
+    printf("finished\n\n");
+}
+
+int main(){    
+    //算法单机
+    CalcSortTime(dataArr ,DATA_ARR_LEN, SelectionSort, "SelectionSort");
+    CalcSortTime(dataArr ,DATA_ARR_LEN, MergeSort, "MergeSort");
+    CalcSortTime(dataArr ,DATA_ARR_LEN, QuickSortv2, "QuickSortv2");
+    CalcSortTime(dataArr ,DATA_ARR_LEN, InsertionSort, "InsertionSort");
+    CalcSortTime(dataArr ,DATA_ARR_LEN, ShellSort, "ShellSort");
+    CalcSortTime(dataArr ,DATA_ARR_LEN, RadixSort, "RadixSort");
+
     //排序前的数据， 可以通过重定向来查看验证
     // printf("Before sort\n");
     // PrintArr(dataArr, DATA_ARR_LEN);
-    
+    // 测试排序的单机性能
+    struct timeval tv_begin,tv_end;
+    long long s_usec;
+    long long e_usec;
+    // gettimeofday(&tv_begin,NULL);
+    // SelectionSort(dataArr, sizeof(dataArr)/sizeof(dataArr[0]));
+    // // MergeSort(dataArr, sizeof(dataArr)/sizeof(dataArr[0]));
+    // // QuickSort(dataArr, 0, sizeof(dataArr)/sizeof(dataArr[0])-1);
+    // // ShellSort(dataArr, sizeof(dataArr)/sizeof(dataArr[0]));
+    // // RadixSort(dataArr, sizeof(dataArr)/sizeof(dataArr[0]));
+    // gettimeofday(&tv_end,NULL);
+    // s_usec = tv_begin.tv_sec * 1000000 + tv_begin.tv_usec;
+    // e_usec = tv_end.tv_sec * 1000000 + tv_end.tv_usec;
+    // printf("算法单击性能\n");
+    // printf("毫秒差: %ld\n", e_usec-s_usec);
+    // printf("秒差:%ld\n", (e_usec-s_usec)/1000000);  
+    // printf("\n");
+    // PrintArr(dataArr, DATA_ARR_LEN);
+
+    /* 多线程分布式 */
+    printf("Multipthread sort start\n");
+    InitData(dataArr, DATA_ARR_LEN);
     //初始化线程栏杆，PTHREAD_NUM+1是因为除了排序线程还有本进程
     pthread_barrier_init(&barrier, NULL, PTHREAD_NUM+1);
-
-    struct timeval tv_begin,tv_end;
+    
     gettimeofday(&tv_begin,NULL);
     for (int i = 0; i < PTHREAD_NUM; i++)
     {
         pthread_t tid;
-        pthread_create(&tid, NULL, SortWorkv2, (void *)(i*PTHREAD_ARR_LEN));
+        pthread_create(&tid, NULL, SortWork, (void *)(i*PTHREAD_ARR_LEN));
     }
     
     pthread_barrier_wait(&barrier);
-    printf("all pthread has finished\n");
-    printf("\n");
+    printf("all pthread(%d) has finished\n", PTHREAD_NUM);
     pthread_barrier_destroy(&barrier);
     Merge(dataArr, DATA_ARR_LEN);
 
     gettimeofday(&tv_end,NULL);
-    long long s_usec = tv_begin.tv_sec * 1000000 + tv_begin.tv_usec;
-    long long e_usec = tv_end.tv_sec * 1000000 + tv_end.tv_usec;
+    s_usec = tv_begin.tv_sec * 1000000 + tv_begin.tv_usec;
+    e_usec = tv_end.tv_sec * 1000000 + tv_end.tv_usec;
+
     printf("毫秒差: %ld\n", e_usec-s_usec);
     printf("秒差:%ld\n", (e_usec-s_usec)/1000000);
 

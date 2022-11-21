@@ -22,7 +22,7 @@ void SelectionSort(int arr[], int len)
             arr[minIndex] = arr[i];
             arr[i] = minValue;
 
-            PrintArr(arr, len);            
+            // PrintArr(arr, len);            
         }
 }
 
@@ -36,7 +36,7 @@ void MergeSort(int arr[], int len)
     }
     memset(tempMergeArr, 0, len);
 
-    DivideMergeSort(arr, tempMergeArr, 0, len-1);
+    DivideMergeSort(arr, tempMergeArr, 0, len-1);//划分小问题
 
     if (tempMergeArr != NULL)
     {
@@ -101,15 +101,10 @@ void QuickSort(int arr[], int begin, int end)
     }
 }
 
-void PrintArr(int arr[], int len)
+void QuickSortv2(int arr[], int len)
 {
-    for (int i = 0; i < len; i++)
-    {
-        printf("%d\n", arr[i]);
-    }
-    printf("\n");
+    QuickSort(arr, 0, len-1);
 }
-
 
 void InsertionSort(int *arr, int len)
 {
@@ -125,19 +120,19 @@ void InsertionSort(int *arr, int len)
         arr[cur_position] = cur_value;
 
         //打印验证
-        printf("第%d次排序：", i);
-        for (int j = 0; j <= i; j++)
-        {
-            printf("%d ", arr[j]);
-        }
-        printf("\n");
+        // printf("第%d次排序：", i);
+        // for (int j = 0; j <= i; j++)
+        // {
+        //     printf("%d ", arr[j]);
+        // }
+        // printf("\n");
     }
 }
 
 void ShellSort(int arr[], int len)
 {
-    for(int gap = len/2; gap >0; gap = gap/2) {
-        for (int i = gap; i < len; i++)
+    for(int gap = len/2; gap >0; gap = gap/2) {//排序间隔，每次迭代/2
+        for (int i = gap; i < len; i++)//i从gap开始而不从0开始，每次+1
         {
             int cur_pos = i;
             int cur_date = arr[i];
@@ -175,9 +170,10 @@ void RadixSort(int arr[], int len) {
     memset(tmp, 0, sizeof(int *)*10);
     for(int i =0; i < 10; i++)
     {
-        tmp[i] = (int*)malloc(sizeof(int)*(len+1));
+        tmp[i] = (int*)malloc(sizeof(int)*(len+1));//len+1是因为每个桶的第一个数据存储该桶的数据个数
         memset(tmp[i], 0, sizeof(int)*(len+1));
     }
+
     int radix = 1;
     for(int i = 0; i < bit; i++)//位数次排序
     {
@@ -190,7 +186,7 @@ void RadixSort(int arr[], int len) {
             int num = arr[j]/radix%10;//arr[j]在该轮的基数，放入
             ++tmp[num][0];
             tmp[num][tmp[num][0]] = arr[j];
-            printf("num %d into num[%d][%d]\n", arr[j], num,tmp[num][0]);
+            // printf("num %d into num[%d][%d]\n", arr[j], num,tmp[num][0]);
         }
 
         //tmp内容放回数组，进行下一轮基排
@@ -213,6 +209,7 @@ void RadixSort(int arr[], int len) {
         radix *= 10;
     }
 
+    //释放数组内存
     for(int i = 0; i < 10; i++)
     {
         if(tmp[i] != NULL)
@@ -226,6 +223,14 @@ void RadixSort(int arr[], int len) {
     {
         delete(tmp);
         tmp = NULL;
+    }   
+}
+
+void PrintArr(int arr[], int len)
+{
+    for (int i = 0; i < len; i++)
+    {
+        printf("%d\n", arr[i]);
     }
-    
+    printf("\n");
 }
